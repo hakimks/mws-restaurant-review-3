@@ -273,3 +273,150 @@ nav h1 a {
 #restaurant-hours td {
   color: #666;
 }
+
+#restaurants-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Responsive implementation */
+@media screen and (max-width:700px) {
+  #neighborhoods-select, #cuisines-select {
+    width: calc((100% - 4px) / 2);
+  }
+  .filter-options select {
+    margin: 0px;
+  }
+  #restaurants-list, #restaurants-list li {
+    padding: 0px;
+  }
+  #restaurants-list li {
+    margin: 0px;
+    margin-top: 10px;
+    width:100%;
+    padding:5px;
+    text-align:center;
+  }
+  img.restaurant-img {
+    width: 100%;
+    max-width: 600px;
+    max-height: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media screen and (min-width:701px) {
+  #restaurants-list li {
+    padding: 0px;
+    margin:0px;
+    margin-top: 15px;
+    width: calc( (100% - 10px) / 2);
+    text-align:center;
+  }
+  img.restaurant-img { 
+    max-width: 600px;
+    max-height: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media screen and (min-width: 1000px){
+  
+  #restaurants-list li {
+    padding: 0px;
+    margin:0px;
+    margin-top: 15px;
+    width: calc( (100% - 15px) / 3);
+    text-align:center;
+  }
+}
+
+/* Media queries related to restaurant detail page */
+
+@media screen and (min-width: 800px) {
+  #reviews-list li {
+    width: calc(50% - 10px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #reviews-list li p:nth-child(3){
+    margin-top:10px;
+  }
+  p#restaurant-address {
+    width: 100%;
+    font-size: 30px;
+    text-decoration: none;
+  }
+  table#restaurant-hours tr td {
+    font-size: 24px;
+  }
+  img#restaurant-img {
+    max-height: 400px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media screen and (min-width: 1200px) {
+  #restaurants-list, .filter-options {
+    width: 1200px;
+    margin-left: auto;
+    margin-right:auto;
+  }
+  #reviews-list li {
+    width: calc(33% - 20px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  h2#restaurant-name {
+    order: -2;
+    font-size: 36px;
+  }
+  nav h1 a, h2#restaurant-name, ul#breadcrumb li, ul#breadcrumb li a { 
+    font-size: 36px;
+  }
+  img#restaurant-img {
+    width: calc(50% - 30px);
+    order: 1;
+    padding-left:20px;
+    
+    max-height: 400px;
+    max-width: 600px;
+  }
+  table#restaurant-hours {
+    width: calc(50% - 30px);
+    order: 2;
+    margin-top: 20px;
+  }
+  table#restaurant-hours tr td {
+    font-size: 24px;
+  }
+  p#restaurant-address {
+    order: 0;
+    font-size: 30px;
+    text-decoration: none;
+    width: calc(50% - 30px);
+  }
+  p#restaurant-cuisine {
+    width: calc(50% - 30px);
+    margin-left:20px;
+    margin-bottom:0px;
+    order: -1;
+    line-height:4em;
+  }
+  #reviews-list li p:last-of-type {
+    font-size: 18px;
+  }
+  .filter-options {
+    position: relative;
+  }
+  .filter-options h2 {
+    position: absolute;
+    top: 40%;
+    left: 20px;
+    font-size: 18px;
+  }
+  .filter-options select {
+    float: right;
+  }
+}
