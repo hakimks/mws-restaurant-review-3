@@ -154,6 +154,14 @@ class DBHelper {
   }
 
   /**
+   * added by Hakim
+   * create alt field for resturant
+   */
+  static ImageAltForResturant(restaurant) {
+    return(`${restaurant.name}`);
+  }
+
+  /**
    * Map marker for a restaurant.
    */
    static mapMarkerForRestaurant(restaurant, map) {
