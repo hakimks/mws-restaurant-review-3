@@ -72,7 +72,7 @@ nav h1 a {
     background-color: #eee;
     font-size: 17px;
     margin: 0;
-    width: calc(50% - 80px);
+    
 }
 
 /* Display list items side by side */
@@ -359,6 +359,7 @@ nav h1 a {
 .inside > #maincontent {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 20px;
 }
 .inside > section {
   width: 100%;
