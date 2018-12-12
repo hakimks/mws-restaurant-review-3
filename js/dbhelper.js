@@ -1,3 +1,6 @@
+// import idb from 'idb';
+
+
 /**
  * Common database helper functions.
  */
@@ -8,27 +11,71 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/restaurants`;
   }
 
+  static openDatabase() {
+    let dbPromise = idb.open('restDatabase', 1, upgradeDb => {
+      const store = upgradeDb.createObjectStore('restStore', {keyPath: 'id'});
+      store.createIndex('by-id', 'id');
+    });
+
+    return dbPromise;
+  }
+
+  static getRestuarantFromServer() {
+    return fetch(DBHelper.DATABASE_URL)
+            .then(response => {
+              return response.json();
+            }).then(restaurants => {
+              DBHelper.saveToIndxDatabase(restaurants);
+              return restaurants;
+            });
+  }
+
+  static saveToIndxDatabase(restaurantData) {
+    return DBHelper.openDatabase().then(database => {
+      if(!database) {
+        return;
+      }
+      const tx = database.transaction('restStore', 'readwrite');
+      const store = tx.objectStore('restStore');
+      restaurantData.forEach(restaurant => {
+        store.put(restaurant);
+      });
+      return tx.complete;
+    });
+  }
+
+  static fetchStoredRestuarants() {
+    return DBHelper.openDatabase().then(database => {
+      if(!database) {
+        return;
+      }
+      let store = database
+            .transaction('restStore')
+            .objectStore('restStore');
+
+      return store.getAll();
+    });
+  }
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
+   
+    return DBHelper.fetchStoredRestuarants().then(restaurants => {
+      if(!restaurants.length) {
+        return DBHelper.getRestuarantFromServer();
       }
-    };
-    xhr.send();
+      return Promise.resolve(restaurants);
+    }).then(restaurants => {
+      callback(null, restaurants);
+    }).catch(err => {
+      callback(err, null);
+    });
+    
   }
 
   /**
@@ -150,7 +197,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    return (`/img/${restaurant.photograph}.jpg`);
   }
 
   /**
