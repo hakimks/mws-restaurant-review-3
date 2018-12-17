@@ -1,8 +1,10 @@
 
-const kimCache = 'kim-restaurant-review';
+const kimCache = 'kimrestaurant-review-v2';
 
 let filesToCache = [
-    '/',
+    './',
+    'manifest.json',
+    'restaurant.html',
     'index.html',
     'js/main.js',
     'js/dbhelper.js',
@@ -17,8 +19,9 @@ let filesToCache = [
     'img/7.jpg',
     'img/8.jpg',
     'img/9.jpg',
-    'img/10.jpg'
-
+    'img/10.jpg',
+    'img/rr-512.png',
+    'img/rr-icon.png'
 
   ];
   
@@ -48,3 +51,15 @@ self.addEventListener('fetch', (event) => {
       })
     );
   });
+
+  // self.addEventListener('activate', function (event) {
+  //   event.waitUntil(
+  //     caches.keys().then(cacheNames => {
+  //       cacheNames.filter(function (cacheName) {
+  //         return cacheName.startsWith('kimrestaurant-') && cacheName != kimCache; 
+  //       }).map(function (cacheName) {
+  //         return caches.delete(cacheName);
+  //       })
+  //     })
+  //   );
+  // });
