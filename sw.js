@@ -2,7 +2,7 @@
 const kimCache = 'kimrestaurant-review-v2';
 
 let filesToCache = [
-    './',
+    '/',
     'manifest.json',
     'restaurant.html',
     'index.html',

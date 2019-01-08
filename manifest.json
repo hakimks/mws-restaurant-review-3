@@ -1,6 +1,6 @@
 {
     "short_name": "Rest_review",
-    "name": "Restaurant Review",
+    "name": "Hakim Restaurant Review",
     "icons": [
       {
         "src": "/img/rr-icon.png",
@@ -16,6 +16,6 @@
     "start_url": "/",
     "background_color": "#fdfdfd",
     "display": "standalone",
-    "theme_color": "#333"
+    "theme_color": "#333333"
   }
   
