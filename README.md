@@ -23,3 +23,14 @@ Meet the new performance requirements: In addition to adding new features, the p
     Progressive Web App score should be at 90 or better.
     Performance score should be at 90 or better.
     Accessibility score should be at 90 or better.
+
+Getting Started
+
+Install Project Dependancies 
+    
+    # npm install
+
+Generate the Sw worker
+    # gulp generate-service-worker
+
+Start the server 
