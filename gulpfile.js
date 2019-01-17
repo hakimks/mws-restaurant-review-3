@@ -12,6 +12,7 @@ gulp.task('generate-service-worker', function(callback) {
                         'index.html',
                         'restaurant.html',
                         'sw.js',
+                        'data/**/*'
                         ],
       stripPrefix: rootDir
     }, callback);
