@@ -18,7 +18,12 @@ class DBHelper {
   static openDatabase() {
     let dbPromise = idb.open('restDatabase', 1, upgradeDb => {
       const store = upgradeDb.createObjectStore('restStore', {keyPath: 'id'});
+      const reviews = upgradeDb.createObjectStore('reviewsStore', {keyPath: 'id'});
+      const offlineReviews = upgradeDb.createObjectStore('offlineReviewsStore', {keyPath: 'updatedAt'});
+
       store.createIndex('by-id', 'id');
+      reviews.createIndex('Restaurant-id', 'id');
+
     });
 
     return dbPromise;
