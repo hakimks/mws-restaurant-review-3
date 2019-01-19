@@ -15,6 +15,7 @@ class DBHelper {
     return `http://localhost:${port}/restaurants`;
   }
 
+
   static openDatabase() {
     let dbPromise = idb.open('restDatabase', 1, upgradeDb => {
       const store = upgradeDb.createObjectStore('restStore', {keyPath: 'id'});
@@ -236,6 +237,113 @@ class DBHelper {
     );
     return marker;
   } */
+
+  /**
+	 * Fetch all reviews for a restaurant
+	 */
+	static fetchRestaurantReviews(restaurant, callback) {
+		DBHelper.dbPromise.then(db => {
+			if (!db) return;
+
+			const tx = db.transaction('reviewsStore');
+			const store = tx.objectStore('reviewsStore');
+			store.getAll().then(results => {
+
+				if (results && results.length > 0) {
+					callback(null, results);
+				} else {
+					fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurant.id}`)
+					.then(response => {
+						return response.json();
+					})
+					.then(reviews => {
+						this.dbPromise.then(db => {
+							if (!db) return;
+							const tx = db.transaction('reviewsStore', 'readwrite');
+							const store = tx.objectStore('reviewsStore');
+
+							reviews.forEach(review => {
+								store.put(review);
+							})
+						});
+						callback(null, reviews);
+					})
+					.catch(error => {
+						callback(error, null);
+					})
+				}
+			})
+		});
+	}
+
+  
+	/**
+	 * Submit Review
+	 */
+	static submitReview(data) {
+		console.log(data);
+
+		return fetch(`${DBHelper.DATABASE_URL}/reviews`, {
+			body: JSON.stringify(data),
+			cache: 'no-cache',
+			credentials: 'same-origin',
+			headers: {
+				'content-type': 'application/json'
+			},
+			method: 'POST',
+			mode: 'cors',
+			redirect: 'follow',
+			referrer: 'no-referrer',
+		})
+		.then(response => {
+			response.json()
+				.then(data => {
+					this.dbPromise.then(db => {
+						if (!db) return;
+						const tx = db.transaction('reviewsStore', 'readwrite');
+						const store = tx.objectStore('reviewsStore');
+						store.put(data);
+					});
+					return data;
+				})
+		})
+		.catch(error => {
+			data['updatedAt'] = new Date().getTime();
+			console.log(data);
+
+			this.dbPromise.then(db => {
+				if (!db) return;
+				const tx = db.transaction('offlineReviewsStore', 'readwrite');
+				const store = tx.objectStore('offlineReviewsStore');
+				store.put(data);
+				console.log('Review stored offline in indexed Database');
+			});
+			return;
+		});
+	}
+
+	static submitOfflineReviews() {
+		DBHelper.dbPromise.then(db => {
+			if (!db) return;
+			const tx = db.transaction('offlineReviewsStore');
+			const store = tx.objectStore('offlineReviewsStore');
+			store.getAll().then(offlineReviews => {
+				console.log(offlineReviews);
+				offlineReviews.forEach(review => {
+					DBHelper.submitReview(review);
+				})
+				DBHelper.clearOfflineReviews();
+			})
+		})
+	}
+
+	static clearOfflineReviews() {
+		DBHelper.dbPromise.then(db => {
+			const tx = db.transaction('offlineReviewsStore', 'readwrite');
+			const store = tx.objectStore('offlineReviewsStore').clear();
+		})
+		return;
+	}
 
 }
 
