@@ -162,6 +162,8 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
+
+  createFormSubmission();
 }
 
 /**
@@ -227,7 +229,8 @@ createFormSubmission = () => {
 	form.addEventListener('submit', function (event) {
 		event.preventDefault();
 		let review = {'restaurant_id': self.restaurant.id};
-		const formdata = new FormData(form);
+    const formdata = new FormData(form);
+    
 
 		for (var [key, value] of formdata.entries()) {
 			review[key] = value;
