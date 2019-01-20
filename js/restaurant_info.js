@@ -220,9 +220,6 @@ getParameterByName = (name, url) => {
 /**
  * Form submission
  */
-/**
- * Form submission
- */
 createFormSubmission = () => {
 	const form = document.getElementById('post-review-form');
 

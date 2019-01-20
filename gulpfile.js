@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+const webp = require('gulp-webp');
 
 /// Generate the service worker with sw-precache
 gulp.task('generate-service-worker', function(callback) {
@@ -23,3 +24,9 @@ gulp.task('generate-service-worker', function(callback) {
 //     stripPrefix: rootDir
 //   }, callback);
 // });
+
+gulp.task('towebp', () =>
+    gulp.src('img/images/*')
+        .pipe(webp())
+        .pipe(gulp.dest('img/webp/'))
+);
