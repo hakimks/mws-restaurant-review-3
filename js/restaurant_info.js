@@ -64,15 +64,33 @@ fetchRestaurantFromURL = (callback) => {
     error = 'No restaurant id in URL'
     callback(error, null);
   } else {
+    console.log(restaurant);
+    
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
       if (!restaurant) {
         console.error(error);
         return;
       }
+      
+      
+      DBHelper.fetchRestaurantReviews(restaurant, (error, reviews) => {
+     //   console.log(reviews);
+        
+        self.restaurant.reviews = reviews;
+          if (!reviews) {
+            console.error(error);
+          }
+          fillReviewsHTML(reviews);
+      });
+      console.log(restaurant);
+      console.log(restaurant.reviews);
       fillRestaurantHTML();
+      
       callback(null, restaurant)
     });
+
+    
   }
 }
 
@@ -126,6 +144,8 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+  console.log(reviews);
+  
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -192,4 +212,33 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+
+/**
+ * Form submission
+ */
+/**
+ * Form submission
+ */
+createFormSubmission = () => {
+	const form = document.getElementById('post-review-form');
+
+	form.addEventListener('submit', function (event) {
+		event.preventDefault();
+		let review = {'restaurant_id': self.restaurant.id};
+		const formdata = new FormData(form);
+
+		for (var [key, value] of formdata.entries()) {
+			review[key] = value;
+		}
+
+		DBHelper.submitReview(review)
+			.then(data => {
+				const ul = document.getElementById('reviews-list');
+				ul.appendChild(createReviewHTML(review));
+				form.reset();
+			})
+			.catch(error => console.error(error))
+	});
 }

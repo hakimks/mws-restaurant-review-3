@@ -30,6 +30,8 @@ class DBHelper {
     return dbPromise;
   }
 
+  
+  
   static getRestuarantFromServer() {
     return fetch(DBHelper.DATABASE_URL)
             .then(response => {
@@ -242,7 +244,8 @@ class DBHelper {
 	 * Fetch all reviews for a restaurant
 	 */
 	static fetchRestaurantReviews(restaurant, callback) {
-		DBHelper.dbPromise.then(db => {
+    console.log(restaurant.id);
+		DBHelper.openDatabase().then(db => {
 			if (!db) return;
 
 			const tx = db.transaction('reviewsStore');
@@ -252,12 +255,13 @@ class DBHelper {
 				if (results && results.length > 0) {
 					callback(null, results);
 				} else {
-					fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurant.id}`)
+          
+          fetch('http://localhost:1337/reviews')
 					.then(response => {
 						return response.json();
 					})
 					.then(reviews => {
-						this.dbPromise.then(db => {
+						this.openDatabase().then(db => {
 							if (!db) return;
 							const tx = db.transaction('reviewsStore', 'readwrite');
 							const store = tx.objectStore('reviewsStore');
@@ -298,7 +302,7 @@ class DBHelper {
 		.then(response => {
 			response.json()
 				.then(data => {
-					this.dbPromise.then(db => {
+					this.openDatabase().then(db => {
 						if (!db) return;
 						const tx = db.transaction('reviewsStore', 'readwrite');
 						const store = tx.objectStore('reviewsStore');
@@ -311,7 +315,7 @@ class DBHelper {
 			data['updatedAt'] = new Date().getTime();
 			console.log(data);
 
-			this.dbPromise.then(db => {
+			this.openDatabase().then(db => {
 				if (!db) return;
 				const tx = db.transaction('offlineReviewsStore', 'readwrite');
 				const store = tx.objectStore('offlineReviewsStore');
@@ -323,7 +327,7 @@ class DBHelper {
 	}
 
 	static submitOfflineReviews() {
-		DBHelper.dbPromise.then(db => {
+		DBHelper.openDatabase().then(db => {
 			if (!db) return;
 			const tx = db.transaction('offlineReviewsStore');
 			const store = tx.objectStore('offlineReviewsStore');
@@ -338,7 +342,7 @@ class DBHelper {
 	}
 
 	static clearOfflineReviews() {
-		DBHelper.dbPromise.then(db => {
+		DBHelper.openDatabase().then(db => {
 			const tx = db.transaction('offlineReviewsStore', 'readwrite');
 			const store = tx.objectStore('offlineReviewsStore').clear();
 		})
